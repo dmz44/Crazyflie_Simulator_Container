@@ -234,28 +234,97 @@ The `--build` flag forces Docker to read the `Dockerfile` again and install the 
 
 This section describes how to use Crazysim for cflib simulation.
 
-This manual assumes you have completed Part 1 on setting up your PC. Please enter the container and work within the container.
+This manual assumes you have completed Part 1 and 2 on setting up your PC. Please enter the container and work within the container.
 
-**[PC]** **Enter the Container:** by entering following command in a new terminal window.
+Then follow the instructions for your chosen backend below.
 
+
+---
+
+## Global Simulator Information
+
+Connect with CFLib using URI `udp://127.0.0.1:19850`. For drone swarms increment the port for each additional drone.
+
+You can also test a single crazyflie using the cfclient if you installed it from the crazyflie-clients-python section. Click on the SITL checkbox, scan, and connect.
+
+---
+
+## Simulation Backend: Gazebo
+
+
+### Gazebo Models
+
+| Model | Description |
+| --- | --- |
+| crazyflie | The default Crazyflie 2.1. |
+| crazyflie_thrust_upgrade | The Crazyflie 2.1 with thrust upgrade bundle ([cf2x_T350](https://github.com/utiasDSL/drone-models) parameters). |
+
+#### Option 1: Single agent
 ```bash
-docker exec -it remote_pc_humble bash
-
+bash tools/crazyflie-simulation/simulator_files/gazebo/launch/sitl_singleagent.sh -m crazyflie -x 0 -y 0
 ```
 
-Verify that you have docker shell, e.g. root@remote-pc-humble. You will not be able to execute the simulation software in your native shell. 
+#### Option 2: Multiple agents in a square formation
+```bash
+bash tools/crazyflie-simulation/simulator_files/gazebo/launch/sitl_multiagent_square.sh -n 8 -m crazyflie
+```
 
-**[PC]** Bring up the TurtleBot3 with OpenMANIPULATOR-X into the Gazebo world with the following command in the docker shell.
+#### Option 3: Multiple agents from a coordinates file
+```bash
+bash tools/crazyflie-simulation/simulator_files/gazebo/launch/sitl_multiagent_text.sh -m crazyflie -f single_origin.txt
+```
 
-    ros2 launch turtlebot3_manipulation_gazebo gazebo.launch.py
+---
 
-**[PC]** To control the TurtleBot3 in the Gazebo simulation, the servo server node of MoveIt must be launched first. Open another Docker shell by opening another terminal window and entering the container on that terminal window. Type the following command in the new Docker shell.
+## Simulation Backend: MuJoCo
 
-    ros2 launch turtlebot3_manipulation_moveit_config servo.launch.py
-        
- **[PC]** Launch the keyboard teleoperation node. Open another Docker shell by repeating the previous steps, and type the following command in the new Docker shell.
+[MuJoCo](https://mujoco.org/) does not require Gazebo and tends to run with better real-time performance. Drone models and parameters are provided by the [drone-models](https://github.com/utiasDSL/drone-models) submodule.
 
-    ros2 run turtlebot3_manipulation_teleop turtlebot3_manipulation_teleop
-        
+The MuJoCo backend includes aerodynamic effects from the drone-models `first_principles` model:
+- **Rotor drag**: velocity-dependent drag force using the `drag_matrix` from `params.toml`
+- **Gyroscopic precession**: torque from body angular velocity and net rotor angular momentum
+
+
+### MuJoCo Models
+
+| Model | Description |
+| --- | --- |
+| cf2x_T350 | Crazyflie 2.x with Thrust upgrade kit (default) |
+| cf2x_L250 | Crazyflie 2.x Standard Configuration |
+| cf2x_P250 | Crazyflie 2.x Performance variant |
+| cf21B_500 | Crazyflie 2.1B Brushless |
+
+### Launch Scripts
+Several launch scripts are included to simplify startup.
+
+#### Option 1: Single agent
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh -m cf2x_T350 -x 0 -y 0
+```
+
+#### Option 2: Multiple agents in a square formation
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_multiagent_square.sh -n 8 -m cf2x_T350
+```
+
+#### Option 3: Multiple agents from a coordinates file
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_multiagent_text.sh -m cf2x_T350 -f single_origin.txt
+```
+
+---
+
+### Coordinates File Format
+
+The `-f` flag specifies a coordinates file from `crazyflie-firmware/tools/crazyflie-simulation/drone_spawn_list/`. Each line contains an X,Y spawn position in CSV format:
+
+```
+0.0,0.0
+1.0,0.0
+0.0,1.0
+1.0,1.0
+```
+
+A default `single_origin.txt` file is included. To create your own, add a new `.txt` file to the `drone_spawn_list/` directory.
 
    
