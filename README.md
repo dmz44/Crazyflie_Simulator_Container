@@ -136,8 +136,8 @@ mkdir -p ~/crazyflie_docker
 cd ~/crazyflie_docker
 mkdir -p my_code
 git clone https://github.com/dmz44/Crazyflie_Simulator_Container.git
-cp Docker/Dockerfile Dockerfile
-cp Docker/docker-compose.yml docker-compose.yml
+cp Crazyflie_Simulator_Container/Dockerfile Dockerfile
+cp Crazyflie_Simulator_Container/docker-compose.yml docker-compose.yml
 ```
 
 2. **Build and Start the Container:**
