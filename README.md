@@ -243,6 +243,34 @@ Then follow the instructions for your chosen backend below.
 
 ## Global Simulator Information
 
+You need to execute 1. and 2. every boot.
+
+1. **Enable GUI Permissions:**
+Since the simulation runs inside Docker but displays on your host screen, you need to allow local connections to the X server. This needs to be done every boot:
+```bash
+xhost +local:root
+
+```
+*You need to run this command again if you restart your computer.*
+
+2. **Start the Container. You only need to do it once every boot unless you stop the environment by composing down:**
+
+```bash
+# Build and start the container in detached mode without building.
+cd ~/crazyflie_docker
+HOST_UID=$(id -u) USER_HOME=$HOME docker compose up -d 
+
+```
+And execute all bash commands within the container.
+
+3. **Enter the Container:**
+```bash
+docker exec -it remote_pc_humble bash
+
+```
+
+Note that you need to place your script in my_code folder. The crazyflie_docker/my_code in your host operating system is mapped to ~/my_code in the docker container.
+
 Connect with CFLib using URI `udp://127.0.0.1:19850`. For drone swarms increment the port for each additional drone.
 
 You can also test a single crazyflie using the cfclient if you installed it from the crazyflie-clients-python section. Click on the SITL checkbox, scan, and connect.
@@ -328,6 +356,8 @@ The `-f` flag specifies a coordinates file from `crazyflie-firmware/tools/crazyf
 A default `single_origin.txt` file is included. To create your own, add a new `.txt` file to the `drone_spawn_list/` directory.
 
 ### Script Demo: 8-Drone Circling Demo (MuJoCo)
+
+Create `circling_square.txt` spawn file.
 
 Launch 8 drones using the `circling_square.txt` spawn file:
 ```bash
