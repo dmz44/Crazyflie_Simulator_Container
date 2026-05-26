@@ -12,7 +12,7 @@ Poster: <https://docs.google.com/presentation/d/1YkmZNyvzgnY8wjxot852Uk8dMgz-Reg
 
 30-second summary video:
 
-Key Visuals:
+Key Visuals: <https://docs.google.com/presentation/d/115gO2i_GZikG7vR0Zpoc2FcxGz4xHEBf/edit?usp=sharing&ouid=112415346817157075865&rtpof=true&sd=true>
 
 Report:
 
