@@ -1,12 +1,42 @@
-# Crazyflie Simulator Container For Crazyflie Digital Twin
-
-Credits: Crazysim <https://github.com/gtfactslab/CrazySim>
+# Project Central Github For Crazyflie Digital Twin
 
 **Authors:** Minhyuk Park 
 
+## Project Snapshot
+
+This project develops a high-fidelity digital twin of the Ingram Hall Makerspace that enables safe simulation, training, and deployment of autonomous Crazyflie nano-drones for digital twin-enabled manufacturing applications, including facility monitoring, inspection, and cooperative transport — without ever risking real hardware.
+
+## Poster and Introduction Slide Video
+
+Poster: <https://docs.google.com/presentation/d/1YkmZNyvzgnY8wjxot852Uk8dMgz-Reg5/edit?usp=sharing&ouid=112415346817157075865&rtpof=true&sd=true>
+
+30-second summary video:
+
+Key Visuals:
+
+Poster Day Video: <https://drive.google.com/file/d/1EusbUSjB1M_f65jKXuMQH5INTkOOd7pK/view?usp=sharing>
+
 ## Introduction
 
-This repository will teach you how to deploy the Crazysim simulator in a Docker container environment for testing cflib scripts in simulator. 
+This repository will direct you to various resources I have created for the Makerspace Crazyflie Digital Twin Project.
+
+## Repositories related to this project:
+
+ZED Ply to obj conversion: <https://github.com/dmz44/zed_camera_docker>
+
+How to get the AI deck to work properly: <https://github.com/dmz44/aideck_fixes>
+
+Crazyswarm Lidar SLAM container: <https://github.com/dmz44/Crazyswarm_Rangefinder_SLAM>
+
+Pybullet Simulator for RL training <https://github.com/dmz44/Pybullet_Docker>
+
+Crazysim Simulator (Internal Testing In Progress): <https://github.com/dmz44/Crazyflie_Simulator_Container>
+
+## Crazysim Introduction
+
+This repository will teach you how to deploy the Crazysim simulator in a Docker container environment for testing cflib scripts in the simulator. 
+
+Credits: Crazysim <https://github.com/gtfactslab/CrazySim>
 
 # Part 1 - Environment Setup
 
