@@ -6,13 +6,17 @@
 
 This project develops a high-fidelity digital twin of the Ingram Hall Makerspace that enables safe simulation, training, and deployment of autonomous Crazyflie nano-drones for digital twin-enabled manufacturing applications, including facility monitoring, inspection, and cooperative transport — without ever risking real hardware.
 
-## Poster and Introduction Slide Video
+## Visuals for the Project
 
 Poster: <https://docs.google.com/presentation/d/1YkmZNyvzgnY8wjxot852Uk8dMgz-Reg5/edit?usp=sharing&ouid=112415346817157075865&rtpof=true&sd=true>
 
 30-second summary video:
 
 Key Visuals:
+
+Report:
+
+Other Assets:
 
 Poster Day Video: <https://drive.google.com/file/d/1EusbUSjB1M_f65jKXuMQH5INTkOOd7pK/view?usp=sharing>
 
