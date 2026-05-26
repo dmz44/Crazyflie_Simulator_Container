@@ -24,7 +24,7 @@ Poster Day Video: <https://drive.google.com/file/d/1EusbUSjB1M_f65jKXuMQH5INTkOO
 
 This repository will direct you to various resources I have created for the Makerspace Crazyflie Digital Twin Project.
 
-## Repositories related to this project:
+### Repositories related to this project:
 
 ZED Ply to obj conversion: <https://github.com/dmz44/zed_camera_docker>
 
@@ -35,6 +35,28 @@ Crazyswarm Lidar SLAM container: <https://github.com/dmz44/Crazyswarm_Rangefinde
 Pybullet Simulator for RL training <https://github.com/dmz44/Pybullet_Docker>
 
 Crazysim Simulator (Internal Testing In Progress): <https://github.com/dmz44/Crazyflie_Simulator_Container>
+
+### Key Outcomes:
+
+- Assembled Crazyflie 2.1 system with Lighthouse Localization tripods, configured for autonomous tasks
+- Containerized PyBullet + OpenAI Gym digital twin of the Makerspace 
+- GitHub repository with Crazyflie flight software, trained RL models, and mapping pipelines
+
+### Accomplishments:
+
+- Development of Dual-mapping architecture (offline ZED mesh + online Lidar occupancy grid) demonstrated
+- PPO reinforcement learning pipeline validated for waypoint navigation and obstacle avoidance
+- Sim-to-real transfer pipeline established with minimal modification to deployed policies
+- Applications demonstrated in simulation: facility monitoring, cooperative load transport, object interaction
+
+### Next Steps / Future Development:
+
+- More comprehensive RL policy testing and tuning cycles
+- Development of more sophisticated Digital Twin-Enabled Manufacturing Workflows
+- Expansion to cooperative multi-agent drone scenarios
+- Integration with the broader Texas State intelligent robotics research testbed
+
+-----------------------------------------------------------------------------------
 
 ## Crazysim Introduction
 
