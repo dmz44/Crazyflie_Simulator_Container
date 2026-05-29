@@ -4,19 +4,21 @@
 
 ## Project Snapshot
 
-This project develops a high-fidelity digital twin of the Ingram Hall Makerspace that enables safe simulation, training, and deployment of autonomous Crazyflie nano-drones for digital twin-enabled manufacturing applications, including facility monitoring, inspection, and cooperative transport — without ever risking real hardware.
+This project develops a high-fidelity digital twin of the Ingram Hall Makerspace that enables safe simulation, training, and validated deployment of autonomous Crazyflie nano-drones for digital twin-enabled manufacturing applications such as equipment inspection, real-time monitoring, and cooperative transport.
 
-## Visuals for the Project
+Why it matters: This framework gives any Makerspace users at Texas State a sandbox to safely develop, train, and validate complex autonomous MAV behaviors for emerging applications. 
 
-Poster: <https://docs.google.com/presentation/d/1YkmZNyvzgnY8wjxot852Uk8dMgz-Reg5/edit?usp=sharing&ouid=112415346817157075865&rtpof=true&sd=true>
+Key Learning Point: Parameters that govern MAV flight behaviors must be calibrated for optimal performance, even with correct logic.
 
-30-second summary video:
+## Project Deliverables
+
+30-second summary video: <https://drive.google.com/file/d/1J_6d2As1bpskjAR-dplAZ2sL2opRp90D/view?usp=sharing>
 
 Key Visuals: <https://docs.google.com/presentation/d/115gO2i_GZikG7vR0Zpoc2FcxGz4xHEBf/edit?usp=sharing&ouid=112415346817157075865&rtpof=true&sd=true>
 
 Report:
 
-Other Assets:
+Poster: <https://docs.google.com/presentation/d/1YkmZNyvzgnY8wjxot852Uk8dMgz-Reg5/edit?usp=sharing&ouid=112415346817157075865&rtpof=true&sd=true>
 
 Poster Day Video: <https://drive.google.com/file/d/1EusbUSjB1M_f65jKXuMQH5INTkOOd7pK/view?usp=sharing>
 
