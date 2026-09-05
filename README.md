@@ -431,4 +431,158 @@ python3 circling_square_demo.py
 Before running, update the `uris` list in the script to use SITL UDP URIs (`udp://127.0.0.1:19850` through `udp://127.0.0.1:19857` for 8 drones).
 
 
+---
+
+### Color LEDs (Top & Bottom)
+
+The SITL firmware includes color LED deck drivers (`bcColorLedTop` and `bcColorLedBot`) that send RGB data to the simulator independently for the top and bottom LEDs. The MuJoCo backend renders these colors in real-time on the drone's `led_top` and `led_bot` materials and adds point light sources so the LEDs illuminate the surrounding scene. A headlight is also supported and rendered as a forward-facing spot light. LED RGB values set from cflib or cfclient are reflected in the simulation. A `scene_dark.xml` scene is provided to best visualize the LED lighting effects.
+
+---
+
+### 8-Drone Circling Demo (MuJoCo)
+
+Launch 8 drones using the `circling_square.txt` spawn file:
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_multiagent_text.sh -m cf2x_T350 -f circling_square.txt -M 0.0379
+```
+
+Then in another terminal, run the circling square demo script:
+```bash
+cd crazyflie-lib-python/examples/autonomy
+python3 circling_square_demo.py
+```
+
+Before running, update the `uris` list in the script to use SITL UDP URIs (`udp://127.0.0.1:19850` through `udp://127.0.0.1:19857` for 8 drones).
+
+
+https://github.com/user-attachments/assets/c5d08c86-e879-4121-aecf-5adb6c083b6c
+
+---
+
+### Multiranger
+
+The MuJoCo backend supports the Multi-ranger deck, providing simulated ToF range sensors (front, back, left, right, up). An obstacle scene is included and can be loaded with the `-s` flag:
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh -m cf2x_T350 -x 0 -y 0 -s scene_obstacles.xml
+```
+
+This can be demonstrated using the `multiranger_pointcloud.py` example from [crazyflie-lib-python](https://github.com/bitcraze/crazyflie-lib-python/blob/master/examples/multiranger/multiranger_pointcloud.py), which renders a real-time 3D point cloud while allowing manual flight control via keyboard. To use it with SITL, change the URI to `udp://127.0.0.1:19850` as with the other examples.
+
+https://github.com/user-attachments/assets/f1377d12-ce14-4be9-8d28-07209eee7b6c
+
+
+---
+
+### AI-Deck Camera (MuJoCo)
+
+The MuJoCo backend supports simulated AI-deck camera streaming using the CPX protocol. A companion script `crazysim_cpx.py` emulates the ESP32 WiFi bridge, allowing unmodified cflib AI-deck scripts (e.g. `fpv.py`) to receive camera frames from the simulator exactly as they would from real hardware.
+
+![CrazySim AI-Deck Camera SITL Architecture](docs/crazysim_cpx_architecture.png)
+
+**How it works:**
+- `crazysim.py` renders the drone's FPV camera using MuJoCo's offscreen renderer, converts to grayscale (matching the Himax HM01B0 sensor), and sends frames via UDP to `crazysim_cpx.py`
+- `crazysim_cpx.py` wraps frames in CPX APP packets with the `0xBC` image header and bridges CRTP commands between cflib and the firmware — acting as the ESP32
+- cflib clients connect via TCP and see the same CPX protocol as real hardware
+
+**Launch:**
+
+Terminal 1:
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_camera.sh -s scene_obstacles.xml
+```
+
+Terminal 2:
+```bash
+python3 crazyflie-lib-python/examples/aideck/fpv.py tcp://127.0.0.1:5050
+```
+<img width="1457" height="600" alt="Screenshot from 2026-03-23 17-05-29" src="https://github.com/user-attachments/assets/b95e4f5a-3dc1-4c6c-9408-89bc4d6cdbd0" />
+
+---
+
+### Simulation Features
+
+The MuJoCo backend includes optional physics and sensor features. All features are **off by default** and enabled via flags passed to the launch scripts. Run any script with `-h` to see all options.
+
+#### Sensor Noise (`--sensor-noise`)
+
+Realistic BMI088 IMU noise model with parameters from the [datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi088-ds001.pdf) and validated against real Crazyflie 2.1 hardware:
+- **White noise**: per-axis accelerometer (160/160/190 µg/√Hz X/Y/Z) and gyroscope (0.014 °/s/√Hz) noise density
+- **Bias**: randomized per-drone at startup within datasheet offset tolerances (accel ±20 mg, gyro ±1 °/s)
+- **Scale factor**: randomized gyro sensitivity within ±1% (datasheet tolerance)
+- **Bias random walk**: measured via Allan variance from a real Crazyflie 2.1
+
+Each drone is initialized with randomized bias and scale values, so no two simulated drones behave identically. The gyro bias is handled by the firmware's own calibration at startup, same as on real hardware.
+
+```bash
+# Single agent with sensor noise
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh --sensor-noise
+```
+
+#### Ground Effect (`--ground-effect`)
+
+Models the increased thrust when a drone hovers near the ground. Uses the classical ground effect model where thrust increases as a function of height-to-rotor-radius ratio. This is noticeable when taking off or landing — the drone gets a slight boost close to the floor.
+
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh --ground-effect
+```
+
+#### Downwash (`--downwash`)
+
+Simulates the aerodynamic interaction between drones when one flies above another. The upper drone's prop wash pushes the lower drone down and can cause instability. Uses a Gaussian decay model based on lateral offset and vertical separation. Only meaningful for multi-agent scenarios.
+
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_multiagent_square.sh -n 4 --downwash
+```
+
+#### Wind and Turbulence (`--wind-speed`, `--turbulence`)
+
+Constant wind field with optional stochastic gusts and Dryden turbulence:
+- `--wind-speed <m/s>` — constant wind speed
+- `--wind-direction <deg>` — wind direction in degrees (0=+X, 90=+Y, 180=-X, 270=-Y)
+- `--gust-intensity <m/s>` — random gust peak deviation (Ornstein-Uhlenbeck process)
+- `--turbulence <level>` — Dryden turbulence (`none`, `light`, `moderate`, `severe`)
+
+```bash
+# 2 m/s wind from +X with moderate turbulence
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh \
+    --wind-speed 2 --wind-direction 0 --turbulence moderate
+```
+
+#### Flowdeck (`--flowdeck`)
+
+Simulates the Bitcraze Flow deck v2 sensors:
+- **VL53L1x TOF rangefinder** — downward-facing distance measurement using MuJoCo raycasting (`mj_ray`) at 40 Hz with the hardware-matching exponential noise model from `zranger2.c`
+- **PMW3901 optical flow** — pixel displacement computed from body-frame velocity, height, and angular rate at 100 Hz, matching the UKF's `computeOutputFlow` model (Npix=30, thetapix=4.2 deg, omegaFactor=1.25)
+
+When `--flowdeck` is enabled, external pose packets are suppressed so the estimator runs on TOF + flow only, the same as real hardware with a Flow deck. The pose code remains intact and is used when `--flowdeck` is not passed.
+
+```bash
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh --flowdeck
+```
+
+#### Combining Features
+
+All flags can be combined:
+```bash
+# Single agent with all features
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_singleagent.sh \
+    --sensor-noise --ground-effect --wind-speed 1.5 --turbulence light
+
+# Multi-agent swarm with full physics
+bash tools/crazyflie-simulation/simulator_files/mujoco/launch/sitl_multiagent_square.sh -n 8 \
+    --sensor-noise --ground-effect --downwash --wind-speed 2 --turbulence moderate
+```
+
+---
+
+### PID Tuning Example
+One use case for simulating a crazyflie with the client is real time PID tuning. If you created a custom crazyflie with larger batteries, multiple decks, and upgraded motors, then it would be useful to tune the PIDs in a simulator platform before tuning live on hardware. An example of real time PID tuning is shown below.
+
+MujoCo
+
+https://github.com/user-attachments/assets/e7abb1c6-77c3-4ff5-81b7-611c88dacdda
+
+
+
+
 https://github.com/user-attachments/assets/c5d08c86-e879-4121-aecf-5adb6c083b6c
