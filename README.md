@@ -582,10 +582,12 @@ MujoCo
 
 https://github.com/user-attachments/assets/e7abb1c6-77c3-4ff5-81b7-611c88dacdda
 
-#### Cflib coding Tutorial
+#### Cflib Coding Tutorial
+
+Inside the Docker container
 
 ```
-cd ~/
+cd ~/my_code
 vi demo.py
 ```
 Paste the following
